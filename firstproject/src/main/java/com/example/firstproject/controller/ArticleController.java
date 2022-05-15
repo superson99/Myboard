@@ -6,8 +6,13 @@ import com.example.firstproject.repository.ArticleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @Slf4j
@@ -21,7 +26,8 @@ public class ArticleController {
         return "articles/new";
     }
 
-    @PostMapping("/articles/create") //sumit를 딱 누르면 ~ form으로 데이터가 던져짐 form action = "craete"로 던지면 PostMapping="create"를 찾아서 받는다.
+    //sumit를 딱 누르면 ~ form으로 데이터가 던져짐 form action = "craete"로 던지면 PostMapping="create"를 찾아서 받는다.
+    @PostMapping("/articles/create")
     public String createArticle(ArticleForm form){
 
         //로깅 서버에서 일어나는 일을 기록하자
@@ -40,6 +46,49 @@ public class ArticleController {
         //저장시키고 반환(확인하기위해)
 
 
-        return "";
+        return "redirect:/articles/" + saved.getId();
+
+    }
+
+
+    //웹 페이지에 DB데이터를 뿌려보자
+    @GetMapping("/articles/{id}")
+    public String show(@PathVariable Long id, Model model){
+
+        log.info("id = " + id);
+        //1. id로 데이터를 가져옴
+        Article articleEntity = articleRepository.findById(id).orElse(null);
+
+
+        //2. 가져온 데이터를 모델에 등록
+        model.addAttribute("article" , articleEntity);
+                            //aritcle이라는 변수에 articleEntity를 넣는다.
+        return"articles/show";
+    }
+
+    @GetMapping("/articles")
+    public String index(Model model){
+
+        //1. DB에 저장된 모든 article을 가져온다.
+        List<Article> articleEntityList = articleRepository.findAll();
+
+        //2. 가져온 Article묶음을 뷰로 전달
+        model.addAttribute("articleList" , articleEntityList);
+
+        //3. 뷰 페이지를 작성한다.
+        return"articles/index";
+    }
+
+    @GetMapping("/articles/{id}/edit")
+    public String edit(@PathVariable Long id,Model model){
+
+        //수정할 데이터 가져오기
+        Article articleEntity = articleRepository.findById(id).orElse(null);
+
+        // 모델에 데이터를 등록!
+        model.addAttribute("article" , articleEntity);
+
+        //뷰 페이지 설정
+        return"articles/edit";
     }
 }
