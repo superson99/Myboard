@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +57,7 @@ public class ArticleController {
     public String show(@PathVariable Long id, Model model){
 
         log.info("id = " + id);
-        //1. id로 데이터를 가져옴
+        //1. id로 데이터를 가져옴 (DB에서는 SELECT 문으로 가져와서 여기 뿌려줌)
         Article articleEntity = articleRepository.findById(id).orElse(null);
 
 
@@ -90,5 +91,45 @@ public class ArticleController {
 
         //뷰 페이지 설정
         return"articles/edit";
+    }
+
+    @PostMapping("/article/Update")
+    public String update(ArticleForm form){
+        log.info(form.toString());
+
+        //1. DTO를 Entity로 변경
+        Article articleEntity = form.toEntity();
+        log.info(articleEntity.toString());;
+
+       //2.Entity를 DB로 저장
+        //2-1
+        Article target = articleRepository.findById(articleEntity.getId()).orElse(null);
+        //findByid는 id로 테이블 전체를 가져온다 (article)
+
+        if(target != null){
+          Article saved = articleRepository.save(articleEntity);
+        }
+
+
+        //3. 변경된 데이터를 redirect
+
+        return"redirect:/articles/" + articleEntity.getId();
+    }
+
+    @GetMapping("/articles/{id}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes rttr){
+        log.info("삭제요청이 들어았음");
+
+        //1.삭제 대상을 가져와보자
+        Article target = articleRepository.findById(id).orElse(null);
+
+        //2.대상을 삭제한다.
+        if(target != null){
+            articleRepository.delete(target);
+            rttr.addFlashAttribute("msg","삭제가 완료되었습니다.");
+        }
+
+
+        return"redirect:/articles";
     }
 }
