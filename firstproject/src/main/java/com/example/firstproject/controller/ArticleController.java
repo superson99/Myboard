@@ -73,6 +73,8 @@ public class ArticleController {
         //1. DB에 저장된 모든 article을 가져온다.
         List<Article> articleEntityList = articleRepository.findAll();
 
+        log.info(articleEntityList.toString());
+
         //2. 가져온 Article묶음을 뷰로 전달
         model.addAttribute("articleList" , articleEntityList);
 
