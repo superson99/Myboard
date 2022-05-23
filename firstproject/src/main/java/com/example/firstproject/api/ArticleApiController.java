@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -56,8 +57,15 @@ public class ArticleApiController {
     }
 
     //PATCH
+    @PatchMapping("/api/articles/{id}")
+    public ResponseEntity<Article> update(@PathVariable Long id, @RequestBody ArticleForm dto){
+        Article updated = articleService.update(id,dto);
+        return (updated != null) ?
+                ResponseEntity.status(HttpStatus.OK).body(updated):
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
 
-//
+
 //    //PATCH (update)
 //    @PatchMapping("api/articles/{id}")
 //    public ResponseEntity<Article> update(@PathVariable Long id, @RequestBody ArticleForm dto){
@@ -78,7 +86,18 @@ public class ArticleApiController {
 //            return ResponseEntity.status(HttpStatus.OK).body(updated);
 //    }
 //
+
 //    //DELETE
+
+    @DeleteMapping("/api/articles/{id}")
+
+    public ResponseEntity<Article> delete(@PathVariable Long id){
+        Article deleted = articleService.delete(id);
+        return (deleted != null) ?
+                ResponseEntity.status(HttpStatus.OK).build():
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
 //    @DeleteMapping("/api/articles/{id}")
 //    public ResponseEntity<Article> delete(@PathVariable Long id){
 //
@@ -91,4 +110,19 @@ public class ArticleApiController {
 //
 //        return ResponseEntity.status(HttpStatus.OK).build();
 //    }
+
+
+    //traction의 실패시 롤백!
+
+    @PostMapping("/api/transaction-test")
+    public ResponseEntity<List<Article>> transactionTest(@RequestBody List<ArticleForm> dtos){
+
+        List<Article> ArticleList = articleService.createArticles(dtos);
+
+        return (ArticleList != null) ?
+                ResponseEntity.status(HttpStatus.OK).build():
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+    }
+
 }
