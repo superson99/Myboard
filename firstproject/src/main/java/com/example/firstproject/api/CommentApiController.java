@@ -7,10 +7,7 @@ import com.example.firstproject.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,8 +27,31 @@ public class CommentApiController {
 
     //댓글 생성
 
+    @PostMapping("api/articles/{id}/comments")
+    public ResponseEntity<CommentDto> create(@PathVariable Long id, @RequestBody CommentDto dto){
+
+
+        CommentDto created = commentService.commentCreate(id,dto);
+
+        return (created.getArticleId() != null) ?
+                ResponseEntity.status(HttpStatus.OK).body(created):
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
 
     //댓글 수정
+    @PatchMapping("/api/comments/{id}")
+    public ResponseEntity<CommentDto> update(@PathVariable Long id, @RequestBody CommentDto dto){
+
+        //id , nickname, body, articleid
+
+        Comment updated = commentService.update(id,dto);
+
+        return (dto.getArticleId() != null) ?
+                ResponseEntity.status(HttpStatus.OK).body(dto):
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+
+    }
 
     //댓글 삭제
 }
