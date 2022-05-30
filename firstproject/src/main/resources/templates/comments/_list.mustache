@@ -1,0 +1,18 @@
+<div id="comments-list">
+
+    <!--commentDtos가 여러개의 내용이라면 아래 내용을 반복 해라-->
+    {{#commentDtos}}
+        <!--card라는 bootstrap의 틀을 사용함-->
+        <div class ="card m-2" id ="comments-{{id}}">
+            <div class = "card-header">
+                {{nickname}}
+            </div>
+            <div class = "card-body">
+                {{body}}
+            </div>
+        </div>
+    {{/commentDtos}}
+
+
+
+</div>

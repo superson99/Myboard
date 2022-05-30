@@ -1,0 +1,44 @@
+<div class ="card m-2" id = "comments-new">
+    <form>
+        <!--닉네임-->
+        <div class="mb-3">
+            <label class="form-label">nick name</label>
+            <input class="form-control" id="new-comment-nickname">
+        </div>
+        <!--본문-->
+        <div class="mb-3">
+            <label class="form-label">body</label>
+            <textarea class="form-control " id="new-comment-body"></textarea>
+        </div>
+        <!--히든 인풋(article)-->
+        {{#article}}
+            <input type = "hidden" id="new-comment-article-id" value = "{{id}}">
+        {{/article}}
+        <button type="button" class="btn btn-outline-primary btn-sm" id="comment-create-btn">댓글 작성</button>
+    </form>
+</div>
+
+<script>
+    {
+        //댓글 생성버튼을 변수화 -> id가 comment-create-btn인 대상 #은 id
+        //querySelector는 문서의 id나 기타등등을 가져올수있다.
+       const commentCreateBtn = document.querySelector("#comment-create-btn");
+
+       //버튼에서 "click" 이벤트를 감지하고 "click"가 되면 인자의 fnc을 실행시킨다.
+        commentCreateBtn.addEventListener("click",function()
+        {
+
+            //댓글 객체 생성
+            const comment = {
+                nickname:document.querySelector("#new-comment-nickname").value,
+                body:document.querySelector("#new-comment-body").value,
+                articleId:document.querySelector("#new-comment-article-id").value
+            };
+
+            console.log(comment);
+
+            //fetch() - telend api 요청을 js로 보내준다
+        });
+
+    }
+</script>

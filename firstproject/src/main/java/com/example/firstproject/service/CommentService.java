@@ -71,11 +71,14 @@ public class CommentService {
     @Transactional
     public Comment update(Long id, CommentDto dto) {
 
+        //id는 요청 id , dto.id는 dto고유의 id
 
         //변환할 댓글이 있는지 확인 dto의 id로 commentRepository의 아이디를 확인
 
+
+
         //댓글 조회
-       Comment target = commentRepository.findById(dto.getId()).orElseThrow(()->new IllegalArgumentException("댓글이 없다."));
+       Comment target = commentRepository.findById(id).orElseThrow(()->new IllegalArgumentException("댓글이 없다."));
 
        //수정
        target.patch(dto);
@@ -83,8 +86,18 @@ public class CommentService {
        Comment updated =  commentRepository.save(target);
         //리턴
         return updated;
+    }
 
+    @Transactional
+    public CommentDto delete(Long id) {
 
+        Comment target = commentRepository.findById(id).orElse(null);
+
+        if(target == null) new IllegalArgumentException("없는 댓글");
+
+        commentRepository.delete(target);
+
+        return CommentDto.createCommentDto(target);
 
     }
 }

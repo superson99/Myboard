@@ -41,7 +41,6 @@ public class Comment {
         if(dto.getArticleId() != article.getId())
             throw new IllegalArgumentException("게시글의 id가 잘못 되었습니다");
 
-
         return new Comment(dto.getId()
                 ,article
                 ,dto.getNickname()
@@ -50,6 +49,8 @@ public class Comment {
 
     public void patch(CommentDto dto) {
         //예외발생
+
+            //this.id는 요청id에 따라 가져온 Entity,dto는 수정하려하는 dto
         if(this.id != dto.getId()) throw new IllegalArgumentException("id가 잘못 입력됨");
 
         if(dto.getNickname() != null) this.nickname = dto.getNickname();

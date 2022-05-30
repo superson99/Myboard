@@ -1,8 +1,11 @@
 package com.example.firstproject.controller;
 
 import com.example.firstproject.dto.ArticleForm;
+import com.example.firstproject.dto.CommentDto;
 import com.example.firstproject.entity.Article;
 import com.example.firstproject.repository.ArticleRepository;
+import com.example.firstproject.repository.CommentRepository;
+import com.example.firstproject.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +24,9 @@ public class ArticleController {
 
     @Autowired //자동으로 객체를 연결해줌
     private ArticleRepository articleRepository;
+
+    @Autowired
+    private CommentService commentService;
 
     @GetMapping("articles/new")
     public String newArticleForm(){
@@ -59,11 +65,14 @@ public class ArticleController {
         log.info("id = " + id);
         //1. id로 데이터를 가져옴 (DB에서는 SELECT 문으로 가져와서 여기 뿌려줌)
         Article articleEntity = articleRepository.findById(id).orElse(null);
+        List<CommentDto> commentDtos= commentService.comments(id);
 
 
-        //2. 가져온 데이터를 모델에 등록
+        //2. 가져온 데이터를 모델에 등록 ->return Html의 데이터를 담는 model에 데이터를 등록 ->html에서 article변수로 데이터를 사용할수있음
         model.addAttribute("article" , articleEntity);
                             //aritcle이라는 변수에 articleEntity를 넣는다.
+        model.addAttribute("commentDtos",commentDtos);
+
         return"articles/show";
     }
 
@@ -134,4 +143,13 @@ public class ArticleController {
 
         return"redirect:/articles";
     }
+
+//    @PostMapping("/article/comment")
+//    public String commentAdd(CommentDto commentdto){
+//
+//        log.info(commentdto.getNickname()+ "nick name ihihi");
+//        log.info(commentdto.getBody()+" hi hi hi ");
+//
+//        return "redirect:/articles/";
+//    }
 }

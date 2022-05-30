@@ -50,8 +50,16 @@ public class CommentApiController {
                 ResponseEntity.status(HttpStatus.OK).body(dto):
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 
-
     }
 
     //댓글 삭제
+    @DeleteMapping("/api/articles/{id}/comments")
+    public ResponseEntity<CommentDto> delete(@PathVariable Long id){
+
+        CommentDto deleted = commentService.delete(id);
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(deleted);
+    }
+
 }
