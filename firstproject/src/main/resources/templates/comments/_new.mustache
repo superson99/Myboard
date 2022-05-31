@@ -2,12 +2,12 @@
     <form>
         <!--닉네임-->
         <div class="mb-3">
-            <label class="form-label">nick name</label>
+            <label class="form-label">아이디</label>
             <input class="form-control" id="new-comment-nickname">
         </div>
         <!--본문-->
         <div class="mb-3">
-            <label class="form-label">body</label>
+            <label class="form-label">댓글</label>
             <textarea class="form-control " id="new-comment-body"></textarea>
         </div>
         <!--히든 인풋(article)-->
@@ -20,7 +20,7 @@
 
 <script>
     {
-        //댓글 생성버튼을 변수화 -> id가 comment-create-btn인 대상 #은 id
+        //댓글 생성버튼을 변수화 -> id가 comment-create-btn인 대상,  #은 id를 가져오는데 필요한 태그
         //querySelector는 문서의 id나 기타등등을 가져올수있다.
        const commentCreateBtn = document.querySelector("#comment-create-btn");
 
@@ -37,7 +37,26 @@
 
             console.log(comment);
 
-            //fetch() - telend api 요청을 js로 보내준다
+            //fetch() - telend api 요청을 js에서 직접 보내는것
+
+            const url = "/api/articles/" + comment.articleId+  "/comments";
+
+            //보낼 url로 {}의 내용을 보냄
+            fetch(url,{
+                method:"post",
+                body:JSON.stringify(comment),//comment를 json으로 변경하여 보냄
+                headers:{//헤더정보에 보내는 파일이 json파일인것을 명시해준다
+                    "Content-Type":"application/json"
+                }
+
+            }).then(response =>{
+                //fetch로 요청을 보낸후 오는 http 응답 코드에 따른 메시지 출력
+                const msg = (response.ok) ? "댓글이 등록되었습니다." : "등록 실패!";
+                alert(msg); //경고창으로 출력
+                //그리고 페이지 새로고침
+                window.location.reload();
+            })
+
         });
 
     }
