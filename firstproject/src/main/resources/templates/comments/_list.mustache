@@ -15,6 +15,9 @@
                         data-bs-nickname = "{{nickname}}"
                         data-bs-body = "{{body}}"
                         data-bs-article-id = "{{articleId}}">수정</button>
+                <!-- Comment Delete Btn-->
+                <button type ="button" class ="btn btn-sm btn-outline-danger comment-delete-btn"
+                data-comment-id = "{{id}}">삭제</button>
             </div>
             <div class = "card-body">
                 {{body}}
@@ -55,7 +58,7 @@
         </div>
     </div>
 
-
+    <!-- Modal 이벤트 처리 -->
     <script>
         //모달 요소 선택
         const commentEditModal = document.querySelector("#Comment-edit-modal");
@@ -120,3 +123,39 @@
         }
 
     </script>
+
+<!--댓글 삭제 -->
+<script>
+    {
+        //삭제 버튼들을 가져옴
+       const commentDeleteBtns = document.querySelectorAll(".comment-delete-btn");
+
+       //삭제 버튼 이벤트를 처리
+        commentDeleteBtns.forEach(btn =>{
+            btn.addEventListener("click", function(event){
+
+                const commentDeleteBtn = event.target;
+
+                const commentId =  commentDeleteBtn.getAttribute("data-comment-id");
+                console.log("클릭클릭" + commentId);
+
+                const url = "/api/articles/" + commentId +"/comments";
+
+                fetch(url,{
+                    method:"DELETE"
+
+                }).then(response =>{
+                    //fetch로 요청을 보낸후 오는 http 응답 코드에 따른 메시지 출력
+                    const msg = (response.ok) ? "댓글이 삭제되었음." : "삭제 실패 실패!";
+                    alert(msg); //경고창으로 출력
+                    //그리고 페이지 새로고침
+                    //window.location.reload();
+                    const target = document.querySelector(`#comments-${commentId}`);
+                    target.remove();
+                });//end:then;
+            });
+        });
+
+    }
+
+</script>
